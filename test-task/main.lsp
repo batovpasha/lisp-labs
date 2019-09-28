@@ -1,38 +1,6 @@
-(defun includes(element set)
-  (cond
-    ((null set) nil)
-    ((equal element (car set)) t)
-    (t (includes element (cdr set)))
-  )
-)
-
-(defun get_diff(a b result)
-  (cond
-    ((null a) result)
-    ((includes (car a) b) (get_diff (cdr a) b result))
-    (t (get_diff (cdr a) b (cons (car a) result)))
-  )
-)
-
-(defun get_union(a b)
-  (cond
-    ((null a) b)
-    ((includes (car a) b) (get_union (cdr a) b))
-    (t (get_union (cdr a) (cons (car a) b)))
-  )
-)
-
-(defun get_intersection(a b)
-  (get_diff 
-    (get_diff (get_union a b) (get_diff a b nil) nil) 
-    (get_diff b a nil)
-    nil
-  )
-)
-
 (defun fn(a b c d operation)
   (cond
-    ((equal operation "includes") 
+    ((equal operation "includes")
       (cond
         ((null b) nil)
         ((equal a (car b)) t)
@@ -40,7 +8,7 @@
       )
     )
 
-    ((equal operation "diff") 
+    ((equal operation "diff")
       (cond
         ((null a) c)
         ((fn (car a) b c nil "includes") (fn (cdr a) b c nil "diff"))
@@ -48,7 +16,7 @@
       )
     )
 
-    ((equal operation "union") 
+    ((equal operation "union")
       (cond
         ((null a) b)
         ((fn (car a) b nil nil "includes") (fn (cdr a) b nil nil "union"))
@@ -56,9 +24,9 @@
       )
     )
 
-    ((equal operation "intersection") 
-      (fn 
-        (fn (fn a b nil nil "union") (fn a b nil nil "diff") nil nil "diff") 
+    ((equal operation "intersection")
+      (fn
+        (fn (fn a b nil nil "union") (fn a b nil nil "diff") nil nil "diff")
         (fn b a nil nil "diff")
         nil
         nil
@@ -66,10 +34,11 @@
       )
     )
 
+    ; Function: A + (B * (C - D))
     ((null operation)
-      (fn 
-        a 
-        (fn 
+      (fn
+        a
+        (fn
           b
           (fn
             c
@@ -78,21 +47,64 @@
             nil
             "diff"
           )
-          nil 
           nil
-          "intersection" 
-        ) 
-        nil 
-        nil 
+          nil
+          "intersection"
+        )
+        nil
+        nil
         "union"
-      )   
+      )
     )
   )
 )
 
+; Tests
 
-;(print (includes 5 '(1 2 3 4)))
-;(print (diff '(1 2) '(1 2 3 4) nil))
-;(print (get_union '(3 4 5 6 7) '()))
-;(print (get_intersection '(1 2 3 4 5) '(3 4 5 6 7 8)))
-(print (fn '(1 2) '(4 5 6) '(5 6 7 8) '() nil))
+(if
+  (equal (fn '(1 2 3) '() '(3 4) '(1 5) nil) '(3 2 1))
+  (print "Test 1 passed!")
+  (print "Test 1 failed!")
+)
+
+(if
+  (equal (fn '(1 2 3) '(2) '(3 4) '(1 5) nil) '(3 2 1))
+  (print "Test 2 passed!")
+  (print "Test 2 failed!")
+)
+
+(if
+  (equal (fn '(1 2 3) '(4) '(3 4) '(1 5) nil) '(3 2 1 4))
+  (print "Test 3 passed!")
+  (print "Test 3 failed!")
+)
+
+(if
+  (equal (fn '(1 2 3) '(4 5) '(5 4) '(1 5) nil) '(3 2 1 4))
+  (print "Test 4 passed!")
+  (print "Test 4 failed!")
+)
+
+(if
+  (equal (fn '(1 2 3) '(4 5 6) '(5 6 4) '(1 5) nil) '(3 2 1 4 6))
+  (print "Test 5 passed!")
+  (print "Test 5 failed!")
+)
+
+(if
+  (equal (fn '() '(4 5 6) '(5) '(1 5) nil) nil)
+  (print "Test 6 passed!")
+  (print "Test 6 failed!")
+)
+
+(if
+  (equal (fn '() '(4 5 6) '(5) '(1) nil) '(5))
+  (print "Test 7 passed!")
+  (print "Test 7 failed!")
+)
+
+(if
+  (equal (fn '(1 2) '(4 5 6) '(5 6 7 8) '(1) nil) '(2 1 6 5))
+  (print "Test 8 passed!")
+  (print "Test 8 failed!")
+)
