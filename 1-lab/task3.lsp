@@ -1,0 +1,18 @@
+(defun task3(n1 n2 n3 n4 n5)
+  (if (and (integerp (min n1 n2 n3 n4 n5)) (integerp (max n1 n2 n3 n4 n5)))
+    (list
+      (if (find (max (abs n1) (abs n2) (abs n3) (abs n4) (abs n5)) (list n1 n2 n3 n4 n5))
+        (max (abs n1) (abs n2) (abs n3) (abs n4) (abs n5))
+        (min n1 n2 n3 n4 n5)
+      )
+      (if (find (min (abs n1) (abs n2) (abs n3) (abs n4) (abs n5)) (list n1 n2 n3 n4 n5))
+        (min (abs n1) (abs n2) (abs n3) (abs n4) (abs n5))
+        (* (min (abs n1) (abs n2) (abs n3) (abs n4) (abs n5)) -1)
+      )
+    )
+    (/ (+ (min n1 n2 n3 n4 n5) (max n1 n2 n3 n4 n5)) 2)
+  )
+)
+
+(print (task3 1 -2 3 4 6))
+(print (task3 1.1 2 3 4 5.1))
