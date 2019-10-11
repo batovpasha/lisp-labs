@@ -82,22 +82,7 @@
       ) 
       (selection_sort_desc (join_lists lst1 lst2))
     )
-
-    (
-      (and 
-        (equal lst1 (selection_sort_desc lst1)) 
-        (equal lst2 (selection_sort_asc lst2))
-      ) 
-      (error "Lists must have same orders!")
-    )
-
-    (
-      (and 
-        (equal lst1 (selection_sort_asc lst1)) 
-        (equal lst2 (selection_sort_desc lst2))
-      ) 
-      (error "Lists must have same orders!")
-    )
+    (t (error "Lists must have same orders!"))
   )  
 )
 
@@ -106,3 +91,16 @@
 
 ; Error handling
 ;(print (join_sorted_lists_with_order_saving '(1 3 5 7 9) '(8 6 4 2)))
+
+; Написать программу, возвращающую список, содержащий информацию о количестве 
+; подсписков на каждом уровне вложенности : ((<уровень><количество подсписков>)...).
+
+(defun calculate_number_of_lists_on_each_nesting_level(lst &optional (lvl 0) (counter 0) (result nil))
+  (cond
+    ((null lst) counter)
+    ((atom (car lst)) (calculate_number_of_lists_on_each_nesting_level (cdr lst) lvl counter result))
+    (t (cons (list (+ lvl 1) (calculate_number_of_lists_on_each_nesting_level (car lst) (+ lvl 1) (+ counter 1))) result))
+  )   
+)
+
+(print (calculate_number_of_lists_on_each_nesting_level '(1 (2 3) (3 4))))
